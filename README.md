@@ -1,8 +1,8 @@
 # Sintellum
 
-**Sintellum** é uma extensão open source para VS Code focada em explicar código **Laravel/PHP + Blade** em português e transformar relações do código em um fluxo visual compreensível.
+**Sintellum** é uma extensão open source para VS Code que ajuda a entender código **Laravel/PHP + Blade** em português e transforma relações do código em um fluxo visual compreensível.
 
-> **Status:** `0.0.1-alpha`. O núcleo está funcional e testado; algumas integrações visuais do produto final ainda estão em evolução.
+> **Status:** `0.0.1-alpha`. O núcleo está funcional e testado; a interface visual avançada ainda está em evolução.
 
 ## Ideia
 
@@ -10,77 +10,44 @@
 Route → FormRequest → Controller → Service → Model → Redirect
 ```
 
-O Sintellum trata `FormRequest` como etapa própria. Exemplo:
+O `FormRequest` é tratado como etapa própria: autoriza/valida antes do Controller. A análise determinística é a fonte de verdade; IA é opcional para melhorar a linguagem e nunca transforma inferência em fato confirmado.
 
-```php
-public function store(StoreOrderRequest $request)
-{
-    $dados = $request->validated();
-    $order = $this->orderService->create($dados);
-    return redirect()->route('orders.show', $order);
-}
-```
+## Modos de confiança
 
-Pode ser entendido como:
-
-```text
-StoreOrderRequest
-  → autoriza e valida
-OrderController
-  → recebe dados já validados
-OrderService
-  → executa a regra de criação
-Order
-  → representa o resultado
-Redirect
-  → conclui a requisição
-```
-
-## Confiança
-
-- `confirmed`: evidência direta no código;
-- `probable`: forte evidência, sem confirmação total;
-- `inferred`: interpretação da IA;
-- `user_corrected`: corrigido pelo usuário.
-
-Nunca usamos “93% de confiança” inventado.
-
-## Sem IA
-
-O Sintellum continua útil sem provider configurado. IA é enriquecimento de linguagem, não a fonte principal das relações técnicas.
-
-## IA opcional
-
-- Ollama local;
-- OpenAI cloud;
-- arquitetura preparada para outros providers.
-
-Consulte [Privacidade](docs/privacy.md) e [Providers](docs/providers.md).
+- `confirmed`: evidência direta no código
+- `probable`: forte evidência, sem confirmação total
+- `inferred`: interpretação da IA
+- `user_corrected`: corrigido pelo usuário
 
 ## Segurança
 
-- não executa PHP/Artisan/Blade do projeto;
-- cloud recebe contexto mínimo;
-- segredos óbvios são redigidos;
-- Workspace Trust restringe recursos sensíveis;
-- webviews usam CSP;
-- mensagens da webview passam por allow-list;
+- não executa PHP, Artisan, Composer scripts ou Blade do projeto;
+- OpenAI recebe apenas contexto mínimo de blocos confirmados pelo usuário;
+- credenciais óbvias são redigidas antes de payload cloud;
+- chaves cloud ficam no `SecretStorage` do VS Code;
+- Workspace Trust bloqueia IA e persistência no projeto quando não confiável;
+- webviews usam CSP e mensagens allow-listed;
 - sem telemetria no V1.
 
-## Fluxo visual e BPMN
+Leia também `SECURITY.md` e `docs/privacy.md`.
 
-O mesmo `FlowGraph` alimenta explicações, fluxo simples e BPMN. O BPMN é **assistivo e editável**; não é apresentado como reconstrução perfeita do processo de negócio.
+## IA opcional
 
-![Mockup conceitual do Sintellum](docs/assets/concept-mockup.png)
+- nenhuma IA: análise estrutural local;
+- Ollama local: restrito a loopback no alpha;
+- OpenAI: chave configurada via comando e guardada no SecretStorage.
 
-> A imagem é um mockup conceitual, não uma captura da versão alpha atual.
+## Fluxo e exportação
+
+O mesmo `FlowGraph` alimenta explicações, fluxo simples e BPMN assistivo. O alpha exporta SVG, PNG e `.bpmn`. O BPMN automático é editável/assistivo e não é apresentado como reconstrução perfeita do processo de negócio.
 
 ## Desenvolvimento
 
-Requer Node.js 22+ e TypeScript 5.7+.
+Requer Node.js 22+ e TypeScript 5.7.2.
 
 ```bash
 npm install
+npm run lint
 npm run typecheck
 npm run test:unit
 npm run test:integration
