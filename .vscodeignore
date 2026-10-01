@@ -1,0 +1,11 @@
+src/**
+test/**
+.superpowers/**
+.worktrees/**
+.github/**
+docs/superpowers/**
+*.log
+.env
+.env.*
+.sintellum/**
+node_modules/**

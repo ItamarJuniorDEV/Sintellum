@@ -1,0 +1,49 @@
+{
+  "name": "sintellum",
+  "displayName": "Sintellum",
+  "description": "Explica fluxos Laravel/PHP + Blade visualmente no VS Code.",
+  "version": "0.0.1",
+  "publisher": "itamarjunior",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.95.0"
+  },
+  "categories": ["Other","Education","Visualization"],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {"command":"sintellum.analyzeCurrentFile","title":"Sintellum: Analisar arquivo atual"},
+      {"command":"sintellum.refreshAnalysis","title":"Sintellum: Atualizar análise"},
+      {"command":"sintellum.toggleBlock","title":"Sintellum: Marcar/desmarcar bloco"},
+      {"command":"sintellum.openFlowEditor","title":"Sintellum: Abrir editor de fluxo"},
+      {"command":"sintellum.configureOpenAiKey","title":"Sintellum: Configurar chave OpenAI"},
+      {"command":"sintellum.exportSvg","title":"Sintellum: Exportar SVG"},
+      {"command":"sintellum.exportPng","title":"Sintellum: Exportar PNG"},
+      {"command":"sintellum.exportBpmn","title":"Sintellum: Exportar BPMN"}
+    ],
+    "configuration": {"title":"Sintellum","properties":{
+      "sintellum.analysisMode":{"type":"string","enum":["manual","automatic"],"default":"manual"},
+      "sintellum.explanationMode":{"type":"string","enum":["simple","normal","technical"],"default":"normal"},
+      "sintellum.provider":{"type":"string","enum":["none","ollama","openai"],"default":"none"},
+      "sintellum.ollama.endpoint":{"type":"string","default":"http://127.0.0.1:11434"},
+      "sintellum.persistence":{"type":"string","enum":["workspaceState","project"],"default":"workspaceState"},
+      "sintellum.ollama.model":{"type":"string","default":"qwen2.5-coder"}
+    }},
+    "viewsContainers":{"panel":[{"id":"sintellumPanel","title":"Sintellum","icon":"resources/sintellum.svg"}]},
+    "views":{"sintellumPanel":[{"type":"webview","id":"sintellum.explanations","name":"Explicações"},{"type":"webview","id":"sintellum.flow","name":"Fluxo visual"}]}
+  },
+  "scripts": {
+    "clean":"rm -rf dist",
+    "build":"npm run clean && tsc -p tsconfig.json",
+    "typecheck":"tsc --noEmit -p tsconfig.json",
+    "test":"node --test --experimental-strip-types",
+    "test:unit":"node --test --experimental-strip-types test/unit/**/*.test.ts",
+    "test:integration":"node --test --experimental-strip-types test/integration/**/*.test.ts",
+    "lint":"tsc --noEmit -p tsconfig.json",
+    "package":"npm run build && node scripts/package-vsix.mjs"
+  },
+  "type":"module",
+  "repository":{"type":"git","url":"https://github.com/ItamarJuniorDEV/Sintellum.git"},
+  "keywords":["laravel","php","blade","code-explanation","bpmn","visualization"],
+  "devDependencies":{"typescript":"5.7.2"}
+}
